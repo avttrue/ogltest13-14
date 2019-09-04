@@ -232,7 +232,6 @@ void OGLWidget::paintGL()
     m_ProgramObject.setUniformValue("u_ShadowPointCloudFilteringQuality", m_ShadowPointCloudFilteringQuality);
     m_ProgramObject.setUniformValue("u_ProjectionMatrix", m_ProjectionMatrix);
     m_ProgramObject.setUniformValue("u_ProjectionLightMatrix", m_ProjectionLightMatrix);
-    m_ProgramObject.setUniformValue("u_LightPower", m_LightPower);
     m_ProgramObject.setUniformValue("u_CountLights", m_Lights.size());
     m_ProgramObject.setUniformValue("u_IndexLightShadow", m_IndexLightShadow);
     m_ProgramObject.setUniformValue("u_ShadowLightMatrix", m_Lights.at(m_IndexLightShadow)->LightMatrix());
@@ -244,6 +243,7 @@ void OGLWidget::paintGL()
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Position").arg(i).toLatin1().data(), m_Lights.at(i)->Position());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Direction").arg(i).toLatin1().data(), m_Lights.at(i)->Direction());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Cutoff").arg(i).toLatin1().data(), m_Lights.at(i)->Cutoff());
+        m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Power").arg(i).toLatin1().data(), m_Lights.at(i)->Power());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Type").arg(i).toLatin1().data(), m_Lights.at(i)->Type());
     }
 
@@ -293,6 +293,7 @@ void OGLWidget::wheelEvent(QWheelEvent *event)
         if(event->delta() > 0 && m_LightPower < 1) m_LightPower += 0.05f;
         else if(event->delta() < 0 && m_LightPower >= 0) m_LightPower -= 0.05f;
 
+        m_Lights.first()->setPower(m_LightPower);
         qDebug() << "Main light power:" << m_LightPower;
         return;
     }

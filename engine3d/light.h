@@ -33,7 +33,10 @@ public:
     void setDirection(const QVector4D &direction);
 
     float Cutoff() const;
-    void setCutoff(float cutoff);
+    void setCutoff(const float& cutoff);
+
+    float Power() const;
+    void setPower(const float& power);
 
     Light::LightType Type() const;
     void setType(const LightType &type);
@@ -51,6 +54,7 @@ private:
     QVector4D m_Direction;
     QMatrix4x4 m_LightMatrix;
     float m_Cutoff;
+    float m_Power;
     LightType m_Type;
 };
 

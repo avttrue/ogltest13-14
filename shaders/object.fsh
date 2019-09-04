@@ -16,6 +16,7 @@ struct LightProperty
     vec4 Position;
     vec4 Direction;
     float Cutoff;
+    float Power;
     int Type; // Direct - 0, Point - 1, Spot - 2
 };
 
@@ -30,7 +31,6 @@ uniform highp float u_ShadowMapSize;
 uniform highp float u_ShadowPointCloudFilteringQuality;
 uniform LightProperty u_LightProperty[COUNT_LIGHTS];
 uniform int u_CountLights;          // реальное количество источников освещения (<= COUNT_LIGHTS)
-uniform highp float u_LightPower;   // яркость освещения
 uniform int u_IndexLightShadow;     // индекс источника освещения с тенью
 
 varying highp vec4 v_position;
@@ -98,6 +98,7 @@ void main(void)
         v_LightProperty[i].DiffuseColor =   u_LightProperty[i].DiffuseColor;
         v_LightProperty[i].SpecularColor =  u_LightProperty[i].SpecularColor;
         v_LightProperty[i].Cutoff =         u_LightProperty[i].Cutoff;
+        v_LightProperty[i].Power =          u_LightProperty[i].Power;
         v_LightProperty[i].Type =           u_LightProperty[i].Type;
         v_LightProperty[i].Direction =      v_viewMatrix * u_LightProperty[i].Direction;
         v_LightProperty[i].Position =       v_viewMatrix * u_LightProperty[i].Position;
@@ -150,13 +151,13 @@ void main(void)
 
         if(u_IsUseDiffuseMap == false) diffMatColor = vec4(u_MaterialProperty.DiffuseColor, 1.0f);
 
-        vec4 diffColor = diffMatColor * u_LightPower * max(0.0f, dot(usingNormal, -lightVec));
+        vec4 diffColor = diffMatColor * v_LightProperty[i].Power * max(0.0f, dot(usingNormal, -lightVec));
         resultLightColor += diffColor * vec4(v_LightProperty[i].DiffuseColor, 1.0f);
 
         vec4 ambientColor = ambientFactor * diffMatColor;
         resultLightColor += ambientColor * vec4(u_MaterialProperty.AmbienceColor, 1.0f) * vec4(v_LightProperty[i].AmbienceColor, 1.0f);
 
-        vec4 specularColor = reflectionColor * u_LightPower * pow(max(0.0f, dot(reflectLight, -eyeVec)), specularFactor);
+        vec4 specularColor = reflectionColor * v_LightProperty[i].Power * pow(max(0.0f, dot(reflectLight, -eyeVec)), specularFactor);
         resultLightColor += specularColor * vec4(u_MaterialProperty.SpecularColor, 1.0f) * vec4(v_LightProperty[i].SpecularColor, 1.0f);
 
         resultColor += resultLightColor;

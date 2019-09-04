@@ -60,10 +60,10 @@ private:
     QOpenGLFramebufferObject* m_DepthBuffer;
     QVector<Light*> m_Lights;
 
-    float m_LightPower;                       // мощность освещения
+    float m_LightPower;                       // мощность основного источника освещения
     float m_ShadowPointCloudFilteringQuality; // качество теней, точность PointCloudFiltering
     int m_ShadowMapSize;                      // качество теней, размер карты теней
-    int m_IndexLightShadow;                   // индекс источника света с тенями
+    int m_IndexLightShadow;                   // индекс источника света с тенями (основной источник)
     unsigned int m_ShadowTextureSlot;         // слот текстур теней
     bool m_IsDrawShadow;                      // отрисовка теней
 

@@ -9,6 +9,7 @@ Light::Light(const LightType &type):
     m_Position(0.0f, 0.0f, 0.0f, 1.0f),
     m_Direction(0.0f, 0.0f, -1.0f, 0.0f),
     m_Cutoff(static_cast<float>(M_PI_2)),
+    m_Power(0.5f),
     m_Type(type)
 {
     applyLightMatrix();
@@ -72,7 +73,7 @@ float Light::Cutoff() const
     return m_Cutoff;
 }
 
-void Light::setCutoff(float cutoff)
+void Light::setCutoff(const float& cutoff)
 {
     m_Cutoff = cutoff;
 }
@@ -99,4 +100,14 @@ void Light::applyLightMatrix()
     m_LightMatrix.lookAt(npos.toVector3D(),
                          (npos + m_Direction).normalized().toVector3D(),
                          QVector3D(m_Direction.x(), m_Direction.z(), -m_Direction.y()));
+}
+
+float Light::Power() const
+{
+    return m_Power;
+}
+
+void Light::setPower(const float& power)
+{
+    m_Power = power;
 }
