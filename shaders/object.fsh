@@ -13,6 +13,7 @@ struct LightProperty
     vec3 AmbienceColor;
     vec3 DiffuseColor;
     vec3 SpecularColor;
+    vec4 ReflectionColor;
     vec4 Position;
     vec4 Direction;
     float Cutoff;
@@ -82,8 +83,8 @@ float CalcShadowAmount(sampler2D map)
 {
     vec3 value = v_positionLightMatrix.xyz / v_positionLightMatrix.w;
     value = value * vec3(0.5f) + vec3(0.5f);
-    float offset = 2.0f;
-    offset *= dot(v_normal, v_LightProperty[u_IndexLightShadow].Direction.xyz);
+    float offset = 2.0f * dot(v_normal, v_LightProperty[u_IndexLightShadow].Direction.xyz);
+
     return SampleShadowMapPCF(map, value.xy, value.z * 255.0f + offset, vec2(1.0f / u_ShadowMapSize));
 }
 
@@ -94,14 +95,15 @@ void main(void)
 
     for(int i = 0; i < countLights; i++)
     {
-        v_LightProperty[i].AmbienceColor =  u_LightProperty[i].AmbienceColor;
-        v_LightProperty[i].DiffuseColor =   u_LightProperty[i].DiffuseColor;
-        v_LightProperty[i].SpecularColor =  u_LightProperty[i].SpecularColor;
-        v_LightProperty[i].Cutoff =         u_LightProperty[i].Cutoff;
-        v_LightProperty[i].Power =          u_LightProperty[i].Power;
-        v_LightProperty[i].Type =           u_LightProperty[i].Type;
-        v_LightProperty[i].Direction =      v_viewMatrix * u_LightProperty[i].Direction;
-        v_LightProperty[i].Position =       v_viewMatrix * u_LightProperty[i].Position;
+        v_LightProperty[i].AmbienceColor =      u_LightProperty[i].AmbienceColor;
+        v_LightProperty[i].DiffuseColor =       u_LightProperty[i].DiffuseColor;
+        v_LightProperty[i].SpecularColor =      u_LightProperty[i].SpecularColor;
+        v_LightProperty[i].ReflectionColor =    u_LightProperty[i].ReflectionColor;
+        v_LightProperty[i].Cutoff =             u_LightProperty[i].Cutoff;
+        v_LightProperty[i].Power =              u_LightProperty[i].Power;
+        v_LightProperty[i].Type =               u_LightProperty[i].Type;
+        v_LightProperty[i].Direction =          v_viewMatrix * u_LightProperty[i].Direction;
+        v_LightProperty[i].Position =           v_viewMatrix * u_LightProperty[i].Position;
     }
 
     highp float shadowCoef = 1.0f;
@@ -147,7 +149,6 @@ void main(void)
         float len = length(v_position.xyz - eyePosition.xyz); // расстояние от наблюдателя до точки
         float specularFactor = u_MaterialProperty.Shines; // размер пятна блика
         float ambientFactor = 0.1f; // светимость материала
-        vec4 reflectionColor = vec4(1.0f, 1.0f, 1.0f, 1.0f); //цвет блика белый
 
         if(u_IsUseDiffuseMap == false) diffMatColor = vec4(u_MaterialProperty.DiffuseColor, 1.0f);
 
@@ -157,7 +158,7 @@ void main(void)
         vec4 ambientColor = ambientFactor * diffMatColor;
         resultLightColor += ambientColor * vec4(u_MaterialProperty.AmbienceColor, 1.0f) * vec4(v_LightProperty[i].AmbienceColor, 1.0f);
 
-        vec4 specularColor = reflectionColor * v_LightProperty[i].Power * pow(max(0.0f, dot(reflectLight, -eyeVec)), specularFactor);
+        vec4 specularColor = v_LightProperty[i].ReflectionColor * v_LightProperty[i].Power * pow(max(0.0f, dot(reflectLight, -eyeVec)), specularFactor);
         resultLightColor += specularColor * vec4(u_MaterialProperty.SpecularColor, 1.0f) * vec4(v_LightProperty[i].SpecularColor, 1.0f);
 
         resultColor += resultLightColor;

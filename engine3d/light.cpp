@@ -6,10 +6,11 @@ Light::Light(const LightType &type):
     m_AmbienceColor(1.0f, 1.0f, 1.0f),
     m_DiffuseColor(1.0f, 1.0f, 1.0f),
     m_SpecularColor(1.0f, 1.0f, 1.0f),
+    m_ReflectionColor(1.0f, 1.0f, 1.0f, 1.0f),
     m_Position(0.0f, 0.0f, 0.0f, 1.0f),
     m_Direction(0.0f, 0.0f, -1.0f, 0.0f),
     m_Cutoff(static_cast<float>(M_PI_2)),
-    m_Power(0.5f),
+    m_Power(1.0f),
     m_Type(type)
 {
     applyLightMatrix();
@@ -100,6 +101,16 @@ void Light::applyLightMatrix()
     m_LightMatrix.lookAt(npos.toVector3D(),
                          (npos + m_Direction).normalized().toVector3D(),
                          QVector3D(m_Direction.x(), m_Direction.z(), -m_Direction.y()));
+}
+
+QVector4D Light::ReflectionColor() const
+{
+    return m_ReflectionColor;
+}
+
+void Light::setReflectionColor(const QVector4D &ReflectionColor)
+{
+    m_ReflectionColor = ReflectionColor;
 }
 
 float Light::Power() const

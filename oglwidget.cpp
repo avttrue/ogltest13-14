@@ -240,6 +240,7 @@ void OGLWidget::paintGL()
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].AmbienceColor").arg(i).toLatin1().data(), m_Lights.at(i)->AmbienceColor());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].DiffuseColor").arg(i).toLatin1().data(), m_Lights.at(i)->DiffuseColor());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].SpecularColor").arg(i).toLatin1().data(), m_Lights.at(i)->SpecularColor());
+        m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].ReflectionColor").arg(i).toLatin1().data(), m_Lights.at(i)->ReflectionColor());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Position").arg(i).toLatin1().data(), m_Lights.at(i)->Position());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Direction").arg(i).toLatin1().data(), m_Lights.at(i)->Direction());
         m_ProgramObject.setUniformValue(QString("u_LightProperty[%1].Cutoff").arg(i).toLatin1().data(), m_Lights.at(i)->Cutoff());
@@ -353,7 +354,7 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
 
 void OGLWidget::timerEvent(QTimerEvent *event)
 {
-    Q_UNUSED(event);
+    Q_UNUSED(event)
 
     //m_LightRotateY += 30 * static_cast<float>(qSin(M_PI / 360.0));
     //applyMainLight();

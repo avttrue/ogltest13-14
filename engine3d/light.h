@@ -1,4 +1,4 @@
-#ifndef LIGHT_H
+﻿#ifndef LIGHT_H
 #define LIGHT_H
 
 #include <QVector3D>
@@ -26,6 +26,9 @@ public:
     const QVector3D SpecularColor() const;
     void setSpecularColor(const QVector3D &specularColor);
 
+    QVector4D ReflectionColor() const;
+    void setReflectionColor(const QVector4D &ReflectionColor);
+
     const QVector4D Position() const;
     void setPosition(const QVector4D &position);
 
@@ -50,10 +53,11 @@ private:
     QVector3D m_AmbienceColor;
     QVector3D m_DiffuseColor;
     QVector3D m_SpecularColor;
+    QVector4D m_ReflectionColor; // цвет блика
     QVector4D m_Position;
     QVector4D m_Direction;
     QMatrix4x4 m_LightMatrix;
-    float m_Cutoff;
+    float m_Cutoff;             // сектор пучка света
     float m_Power;
     LightType m_Type;
 };
